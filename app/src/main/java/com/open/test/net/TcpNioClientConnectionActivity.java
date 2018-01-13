@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.open.net.client.impl.tcp.nio.NioClient;
@@ -23,7 +24,7 @@ public class TcpNioClientConnectionActivity extends Activity {
 
 	private NioClient mClient =null;
 	private EditText ip,port,sendContent,recContent;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -31,8 +32,8 @@ public class TcpNioClientConnectionActivity extends Activity {
 		initView();
 		setTitle("java-socket-tcp-nio");
 	}
-	 
-	
+
+
 	private void initView()
 	{
         findViewById(R.id.set_ip_port).setOnClickListener(listener);
@@ -41,17 +42,14 @@ public class TcpNioClientConnectionActivity extends Activity {
 		findViewById(R.id.reconn).setOnClickListener(listener);
 		findViewById(R.id.send).setOnClickListener(listener);
 		findViewById(R.id.clear).setOnClickListener(listener);
-		
+
 		ip=(EditText) findViewById(R.id.ip);
 		port=(EditText) findViewById(R.id.port);
 		sendContent=(EditText) findViewById(R.id.sendContent);
 		recContent=(EditText) findViewById(R.id.recContent);
 
-//		ip.setText("192.168.4.114");
-//		port.setText("10010");
-
-		ip.setText("192.168.9.141");
-		port.setText("10010");
+		ip.setText("192.168.123.1");
+		port.setText("9999");
 
 		mClient = new NioClient(mMessageProcessor,mConnectResultListener);
 		mClient.setConnectAddress(new TcpAddress[]{new TcpAddress(ip.getText().toString(), Integer.valueOf(port.getText().toString()))});
@@ -69,21 +67,26 @@ public class TcpNioClientConnectionActivity extends Activity {
 
 				case R.id.open:
 					mClient.connect();
+					if(!mClient.isConnected()){
+						((TextView)findViewById(R.id.status)).setText("Connectioning");
+					}
 					break;
-					
+
 				case R.id.close:
 					mClient.disconnect();
+					((TextView)findViewById(R.id.status)).setText("disconnect");
 					break;
-					
+
 				case R.id.reconn:
 					mClient.reconnect();
+					((TextView)findViewById(R.id.status)).setText("Re-Connectioning");
 					break;
-					
+
 				case R.id.send:
 					mMessageProcessor.send(mClient,sendContent.getText().toString().getBytes());
 					sendContent.setText("");
 					break;
-					
+
 				case R.id.clear:
 					recContent.setText("");
 					break;
@@ -95,6 +98,12 @@ public class TcpNioClientConnectionActivity extends Activity {
 	private IConnectListener mConnectResultListener = new IConnectListener() {
 		@Override
 		public void onConnectionSuccess() {
+			runOnUiThread(new Runnable() {
+				public void run() {
+					((TextView)findViewById(R.id.status)).setText("Connection-Success");
+				}
+			});
+
 			int length = Login.login(write_buff,1000,"1111",0);
 			mMessageProcessor.send(mClient,write_buff,0, length);
 			System.out.println("onConnectionSuccess");
@@ -102,7 +111,11 @@ public class TcpNioClientConnectionActivity extends Activity {
 
 		@Override
 		public void onConnectionFailed() {
-			System.out.println("onConnectionFailed");
+			runOnUiThread(new Runnable() {
+				public void run() {
+					((TextView)findViewById(R.id.status)).setText("Connection-Failed");
+				}
+			});
 		}
 	};
 

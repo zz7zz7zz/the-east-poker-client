@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.open.net.client.impl.tcp.bio.BioClient;
 import com.open.net.client.structures.BaseClient;
@@ -19,7 +20,7 @@ public class TcpBioClientConnectionActivity extends Activity {
 
 	private BioClient mClient =null;
 	private EditText ip,port,sendContent,recContent;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -27,8 +28,8 @@ public class TcpBioClientConnectionActivity extends Activity {
 		initView();
 		setTitle("java-socket-tcp-bio");
 	}
-	 
-	
+
+
 	private void initView()
 	{
 		findViewById(R.id.set_ip_port).setOnClickListener(listener);
@@ -37,7 +38,7 @@ public class TcpBioClientConnectionActivity extends Activity {
 		findViewById(R.id.reconn).setOnClickListener(listener);
 		findViewById(R.id.send).setOnClickListener(listener);
 		findViewById(R.id.clear).setOnClickListener(listener);
-		
+
 		ip=(EditText) findViewById(R.id.ip);
 		port=(EditText) findViewById(R.id.port);
 		sendContent=(EditText) findViewById(R.id.sendContent);
@@ -49,9 +50,9 @@ public class TcpBioClientConnectionActivity extends Activity {
 		mClient = new BioClient(mMessageProcessor,mConnectResultListener);
 		mClient.setConnectAddress(new TcpAddress[]{new TcpAddress(ip.getText().toString(), Integer.valueOf(port.getText().toString()))});
 	}
-	
+
 	private OnClickListener listener=new OnClickListener() {
-		
+
 		@Override
 		public void onClick(View v) {
 
@@ -63,21 +64,26 @@ public class TcpBioClientConnectionActivity extends Activity {
 
 				case R.id.open:
 					mClient.connect();
+					if(!mClient.isConnected()){
+						((TextView)findViewById(R.id.status)).setText("Connectioning");
+					}
 					break;
-					
+
 				case R.id.close:
 					mClient.disconnect();
+					((TextView)findViewById(R.id.status)).setText("disconnect");
 					break;
-					
+
 				case R.id.reconn:
 					mClient.reconnect();
+					((TextView)findViewById(R.id.status)).setText("Re-Connectioning");
 					break;
-					
+
 				case R.id.send:
 					mMessageProcessor.send(mClient,sendContent.getText().toString().getBytes());
 					sendContent.setText("");
 					break;
-					
+
 				case R.id.clear:
 					recContent.setText("");
 					break;
@@ -88,12 +94,20 @@ public class TcpBioClientConnectionActivity extends Activity {
 	private IConnectListener mConnectResultListener = new IConnectListener() {
 		@Override
 		public void onConnectionSuccess() {
-
+			runOnUiThread(new Runnable() {
+				public void run() {
+					((TextView)findViewById(R.id.status)).setText("Connection-Success");
+				}
+			});
 		}
 
 		@Override
 		public void onConnectionFailed() {
-
+			runOnUiThread(new Runnable() {
+				public void run() {
+					((TextView)findViewById(R.id.status)).setText("Connection-Failed");
+				}
+			});
 		}
 	};
 

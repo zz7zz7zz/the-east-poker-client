@@ -20,7 +20,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(path: ':net_socket_client')
-    compile files('libs/protobuf-java-2.5.0.jar')
+    compile files('libs/open.net.client.jar')
+    compile files('libs/protobuf-java-3.5.1.jar')
     compile files('libs/protocol.jar')
 }

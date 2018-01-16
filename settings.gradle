@@ -1,1 +1,1 @@
-include ':app', ':net_socket_client'
+include ':app'

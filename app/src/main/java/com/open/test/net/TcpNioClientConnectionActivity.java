@@ -197,7 +197,7 @@ public class TcpNioClientConnectionActivity extends Activity {
 							int body_start 		= header_start  + header_length;
 							int body_length     = packet_length - header_length;
 
-							dispatchMessage(client,msg,header_start,header_length,body_start,body_length);
+							dispatchMessage(client,msg.data,header_start,header_length,body_start,body_length);
 
 							msg_offset += packet_length;
 							msg_length -= packet_length;
@@ -304,7 +304,7 @@ public class TcpNioClientConnectionActivity extends Activity {
 							int body_start 		= header_start 	+ header_length;
 							int body_length     = packet_length - header_length;
 
-							dispatchMessage(client,client.mReceivingMsg,header_start,header_length,body_start,body_length);
+							dispatchMessage(client,client.mReceivingMsg.data,header_start,header_length,body_start,body_length);
 
 							full_packet_count++;
 
@@ -352,14 +352,14 @@ public class TcpNioClientConnectionActivity extends Activity {
 			Log.v(TAG,"code "+ code +" full_packet_count " + full_packet_count + " half_packet_count " + half_packet_count + System.getProperty("line.separator"));
 		}
 
-		public void dispatchMessage(AbstractClient client ,Message msg,int header_start,int header_length,int body_start,int body_length){
+		public void dispatchMessage(AbstractClient client ,byte[] data,int header_start,int header_length,int body_start,int body_length){
 			try {
-				int cmd   = DataPacket.getCmd(msg.data, header_start);
-                Log.v(TAG,"input_packet cmd 0x" + Integer.toHexString(cmd) + " name " + LoginCmd.getCmdString(cmd) + " length " + DataPacket.getLength(msg.data,header_start));
+				int cmd   = DataPacket.getCmd(data, header_start);
+                Log.v(TAG,"input_packet cmd 0x" + Integer.toHexString(cmd) + " name " + LoginCmd.getCmdString(cmd) + " length " + DataPacket.getLength(data,header_start));
 
 				if(cmd == LoginCmd.CMD_LOGIN_RESPONSE){
 
-					LoginResponseProto.LoginResponse readObj = LoginResponseProto.LoginResponse.parseFrom(msg.data,body_start,body_length);
+					LoginResponseProto.LoginResponse readObj = LoginResponseProto.LoginResponse.parseFrom(data,body_start,body_length);
 					final String s = readObj.toString();
 					runOnUiThread(new Runnable() {
 						public void run() {

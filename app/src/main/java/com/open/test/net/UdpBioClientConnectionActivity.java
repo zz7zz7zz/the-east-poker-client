@@ -17,7 +17,7 @@ import com.poker.data.DataPacket;
 import com.poker.packet.BasePacket;
 import com.poker.packet.InPacket;
 import com.poker.packet.OutPacket;
-import com.poker.protocols.login.client.LoginClient;
+import com.poker.protocols.LoginClient;
 import com.poker.protocols.login.server.ResponseLoginProto;
 
 public class UdpBioClientConnectionActivity extends Activity {

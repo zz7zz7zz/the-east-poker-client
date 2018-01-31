@@ -52,7 +52,7 @@ public class TcpBioClientConnectionActivity extends Activity {
 		recContent=(EditText) findViewById(R.id.recContent);
 
 		ip.setText("192.168.123.1");
-		port.setText("9999");
+		port.setText("10010");
 
 		mClient = new BioClient(mMessageProcessor,mConnectResultListener);
 		mClient.setConnectAddress(new TcpAddress[]{new TcpAddress(ip.getText().toString(), Integer.valueOf(port.getText().toString()))});

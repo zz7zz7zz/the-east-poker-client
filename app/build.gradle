@@ -22,5 +22,6 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('libs/open.net.client.jar')
     compile files('libs/protobuf-java-3.5.1.jar')
-    compile files('libs/protocol.jar')
+    compile files('libs/protocol_account.jar')
+    compile files('libs/protocol_game_base.jar')
 }

@@ -92,6 +92,13 @@
 			        android:layout_height="wrap_content"
 			        android:text="清空"/>
 	    </LinearLayout>
+
+		<Button
+			android:id="@+id/login_game"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="5.0dp"
+			android:text="登录"/>
 	</LinearLayout>
 </ScrollView>
 

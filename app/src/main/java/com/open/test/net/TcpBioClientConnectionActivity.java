@@ -12,11 +12,14 @@ import com.open.net.client.impl.tcp.bio.BioClient;
 import com.open.net.client.object.AbstractClient;
 import com.open.net.client.object.IConnectListener;
 import com.open.net.client.object.TcpAddress;
+import com.poker.base.GameIds;
 import com.poker.cmd.LoginCmd;
+import com.poker.cmd.UserCmd;
 import com.poker.data.DataPacket;
 import com.poker.packet.BasePacket;
 import com.poker.packet.InPacket;
 import com.poker.packet.OutPacket;
+import com.poker.protocols.GameClient;
 import com.poker.protocols.LoginClient;
 import com.poker.protocols.login.server.ResponseLoginProto;
 
@@ -45,6 +48,7 @@ public class TcpBioClientConnectionActivity extends Activity {
 		findViewById(R.id.reconn).setOnClickListener(listener);
 		findViewById(R.id.send).setOnClickListener(listener);
 		findViewById(R.id.clear).setOnClickListener(listener);
+		findViewById(R.id.login_game).setOnClickListener(listener);
 
 		ip=(EditText) findViewById(R.id.ip);
 		port=(EditText) findViewById(R.id.port);
@@ -94,6 +98,12 @@ public class TcpBioClientConnectionActivity extends Activity {
 				case R.id.clear:
 					recContent.setText("");
 					break;
+
+				case R.id.login_game:
+					byte[] data = GameClient.requestLogin(GameIds.TEXAS_HOLD_EM_POKER,1);
+					int length = BasePacket.buildClientPacekt(mTempBuff,1, UserCmd.CMD_LOGIN_GAME,(byte)0,data,0,data.length);
+					mMessageProcessor.send(mClient,mTempBuff,0, length);
+					break;
 			}
 		}
 	};
@@ -109,8 +119,8 @@ public class TcpBioClientConnectionActivity extends Activity {
 				}
 			});
 
-			byte[] requestData = LoginClient.requestLogin("1112",0);
-			int length = BasePacket.buildClientPacekt(mTempBuff,1,LoginCmd.CMD_LOGIN_REQUEST,(byte)0,requestData,0,requestData.length);
+			byte[] data = LoginClient.requestLogin("1112",0);
+			int length = BasePacket.buildClientPacekt(mTempBuff,1,LoginCmd.CMD_LOGIN_REQUEST,(byte)0,data,0,data.length);
 			mMessageProcessor.send(mClient,mTempBuff,0, length);
 			System.out.println("onConnectionSuccess");
 		}

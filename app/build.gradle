@@ -25,4 +25,5 @@ dependencies {
     compile files('libs/protocol_account.jar')
     compile files('libs/protocol_base.jar')
     compile files('libs/protocol_texaspoker.jar')
+    compile files('libs/protocol_game_base.jar')
 }

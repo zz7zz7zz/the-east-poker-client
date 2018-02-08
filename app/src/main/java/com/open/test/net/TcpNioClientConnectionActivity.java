@@ -16,12 +16,14 @@ import com.poker.base.GameIds;
 import com.poker.cmd.LoginCmd;
 import com.poker.cmd.UserCmd;
 import com.poker.data.DataPacket;
+import com.poker.games.protocols.BaseGameCmd;
 import com.poker.packet.BasePacket;
 import com.poker.packet.InPacket;
 import com.poker.packet.OutPacket;
 import com.poker.protocols.GameClient;
 import com.poker.protocols.LoginClient;
 import com.poker.protocols.login.server.ResponseLoginProto;
+import com.poker.protocols.texaspoker.TexasGameResponseLoginGameProto.TexasGameResponseLoginGame;
 
 
 public class TcpNioClientConnectionActivity extends Activity {
@@ -156,6 +158,16 @@ public class TcpNioClientConnectionActivity extends Activity {
 
 				if(cmd == LoginCmd.CMD_LOGIN_RESPONSE){
 					onResponseLogin(data,header_start,header_length,body_start,body_length);
+				}else if(cmd == BaseGameCmd.CMD_SERVER_USERLOGIN){
+					onResponseLogingame(data,header_start,header_length,body_start,body_length);
+				}else if(cmd == BaseGameCmd.CMD_SERVER_BROAD_USERLOGIN){
+
+				}else if(cmd == BaseGameCmd.CMD_SERVER_BROAD_USERLOGOUT){
+
+				}else if(cmd == BaseGameCmd.CMD_SERVER_BROAD_USERREADY){
+
+				}else if(cmd == BaseGameCmd.CMD_SERVER_BROAD_USEROFFLINE){
+
 				}
 
 			} catch (InvalidProtocolBufferException e) {
@@ -166,6 +178,18 @@ public class TcpNioClientConnectionActivity extends Activity {
 		public void onResponseLogin(byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
 			ResponseLoginProto.ResponseLogin readObj = ResponseLoginProto.ResponseLogin.parseFrom(data,body_start,body_length);
 			final String s = readObj.toString();
+			runOnUiThread(new Runnable() {
+				public void run() {
+
+					recContent.getText().append(s).append("\r\n");
+				}
+			});
+
+		}
+
+		public void onResponseLogingame(byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
+			TexasGameResponseLoginGame gameLogin = TexasGameResponseLoginGame.parseFrom(data,body_start,body_length);
+			final String s = gameLogin.toString();
 			runOnUiThread(new Runnable() {
 				public void run() {
 

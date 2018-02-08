@@ -119,7 +119,7 @@ public class TcpNioClientConnectionActivity extends Activity {
 				}
 			});
 
-			byte[] data = LoginClient.requestLogin("1111",0);
+			byte[] data = LoginClient.requestLogin(((EditText)findViewById(R.id.uuid)).getText().toString(),0);
 			int length = BasePacket.buildClientPacekt(mTempBuff,1,LoginCmd.CMD_LOGIN_REQUEST,(byte)0,data,0,data.length);
 			mMessageProcessor.send(mClient,mTempBuff,0, length);
 			System.out.println("onConnectionSuccess");

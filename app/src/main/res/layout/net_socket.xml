@@ -31,30 +31,41 @@
 			android:layout_height="wrap_content"
 			android:padding="5dp"
 			android:textColor="#ff0000"/>
+
 		<Button
 			android:id="@+id/set_ip_port"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="5.0dp"
 			android:text="设置ip和端口"/>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
 			<Button
-		        android:id="@+id/open"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_marginTop="5.0dp"
-		        android:text="打开"/>
-	    <Button
-	        android:id="@+id/close"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_marginTop="5.0dp"
-	        android:text="关闭"/>
-	    <Button
-	        android:id="@+id/reconn"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_marginTop="5.0dp"
-	        android:text="重连"/>
+				android:id="@+id/open"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="5.0dp"
+				android:layout_weight="1.0"
+				android:text="打开"/>
+			<Button
+				android:id="@+id/close"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="5.0dp"
+				android:layout_weight="1.0"
+				android:text="关闭"/>
+			<Button
+				android:id="@+id/reconn"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="5.0dp"
+				android:layout_weight="1.0"
+				android:text="重连"/>
+		</LinearLayout>
+
 	    <LinearLayout 
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
@@ -66,7 +77,8 @@
 			        android:layout_height="wrap_content"
 			        android:layout_weight="1.0"
 			        android:hint="要发送的数据"
-			        android:lines="5"/>
+					android:textSize="12sp"
+			        android:lines="3"/>
 			    <Button
 			        android:id="@+id/send"
 			        android:layout_width="100.0dp"
@@ -85,6 +97,7 @@
 			        android:layout_height="wrap_content"
 			        android:layout_weight="1.0"
 			        android:hint="接收到的数据"
+					android:textSize="12sp"
 			        android:lines="5"/>
 			    <Button
 			        android:id="@+id/clear"
@@ -93,12 +106,35 @@
 			        android:text="清空"/>
 	    </LinearLayout>
 
-		<Button
-			android:id="@+id/login_game"
+		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="5.0dp"
-			android:text="登录"/>
+			android:orientation="horizontal">
+			<EditText
+				android:id="@+id/uuid"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_weight="1.0"
+				android:hint="uuid"
+				android:textSize="12sp"
+				android:lines="1"/>
+			<Button
+				android:id="@+id/login_game"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="5.0dp"
+				android:layout_weight="1.0"
+				android:text="登录"/>
+			<Button
+				android:id="@+id/action"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="5.0dp"
+				android:layout_weight="1.0"
+				android:text="操作"/>
+		</LinearLayout>
+
+
 	</LinearLayout>
 </ScrollView>
 

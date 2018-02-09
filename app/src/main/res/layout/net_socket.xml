@@ -86,25 +86,7 @@
 			        android:text="发送"/>
 	    </LinearLayout>
 	
-	    <LinearLayout 
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_marginTop="5.0dp"
-	        android:layout_weight="1.0">
-	            <EditText
-			        android:id="@+id/recContent" 
-			        android:layout_width="match_parent"
-			        android:layout_height="wrap_content"
-			        android:layout_weight="1.0"
-			        android:hint="接收到的数据"
-					android:textSize="12sp"
-			        android:lines="5"/>
-			    <Button
-			        android:id="@+id/clear"
-			        android:layout_width="100.0dp"
-			        android:layout_height="wrap_content"
-			        android:text="清空"/>
-	    </LinearLayout>
+
 
 		<LinearLayout
 			android:layout_width="match_parent"
@@ -124,7 +106,7 @@
 				android:layout_height="wrap_content"
 				android:layout_marginTop="5.0dp"
 				android:layout_weight="1.0"
-				android:text="登录"/>
+				android:text="登录游戏"/>
 			<Button
 				android:id="@+id/action"
 				android:layout_width="match_parent"
@@ -134,6 +116,24 @@
 				android:text="操作"/>
 		</LinearLayout>
 
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="250dp"
+			android:layout_marginTop="5.0dp"
+			android:layout_weight="1.0">
+			<EditText
+				android:id="@+id/recContent"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_weight="1.0"
+				android:hint="接收到的数据"
+				android:textSize="12sp" />
+			<Button
+				android:id="@+id/clear"
+				android:layout_width="100.0dp"
+				android:layout_height="wrap_content"
+				android:text="清空"/>
+		</LinearLayout>
 
 	</LinearLayout>
 </ScrollView>

@@ -2,6 +2,7 @@ package com.open.test.net;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -24,9 +25,9 @@ import com.poker.protocols.GameClient;
 import com.poker.protocols.LoginClient;
 import com.poker.protocols.TexasCmd;
 import com.poker.protocols.login.server.ResponseLoginProto;
+import com.poker.protocols.texaspoker.TexasGameReconnectProto.TexasGameReconnect;
 import com.poker.protocols.texaspoker.TexasGameResponseLoginGameProto.TexasGameResponseLoginGame;
 import com.poker.protocols.texaspoker.TexasGameStartProto.TexasGameStart;
-
 
 public class TcpNioClientConnectionActivity extends Activity {
 
@@ -159,9 +160,9 @@ public class TcpNioClientConnectionActivity extends Activity {
 				System.out.println("input_packet cmd 0x" + Integer.toHexString(cmd) + " name " + LoginCmd.getCmdString(cmd) + " length " + DataPacket.getLength(data,header_start));
 
 				if(cmd == LoginCmd.CMD_LOGIN_RESPONSE){
-					onResponseLogin(data,header_start,header_length,body_start,body_length);
+					onResponseLogin(cmd,data,header_start,header_length,body_start,body_length);
 				}else if(cmd == BaseGameCmd.CMD_SERVER_USERLOGIN){
-					onResponseLogingame(data,header_start,header_length,body_start,body_length);
+					onResponseLogingame(cmd,data,header_start,header_length,body_start,body_length);
 				}else if(cmd == BaseGameCmd.CMD_SERVER_BROAD_USERLOGIN){
 
 				}else if(cmd == BaseGameCmd.CMD_SERVER_BROAD_USERLOGOUT){
@@ -171,7 +172,9 @@ public class TcpNioClientConnectionActivity extends Activity {
 				}else if(cmd == BaseGameCmd.CMD_SERVER_BROAD_USEROFFLINE){
 
 				}else if(cmd == TexasCmd.CMD_SERVER_GAME_START){
-					onGameStart(data,header_start,header_length,body_start,body_length);
+					onGameStart(cmd,data,header_start,header_length,body_start,body_length);
+				}else if(cmd == TexasCmd.CMD_SERVER_RECONNECT){
+					onGameReconnect(cmd,data,header_start,header_length,body_start,body_length);
 				}
 
 			} catch (InvalidProtocolBufferException e) {
@@ -179,37 +182,53 @@ public class TcpNioClientConnectionActivity extends Activity {
 			}
 		}
 
-		public void onResponseLogin(byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
+		public void onResponseLogin(final int cmd, byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
 			ResponseLoginProto.ResponseLogin readObj = ResponseLoginProto.ResponseLogin.parseFrom(data,body_start,body_length);
 			final String s = readObj.toString();
 			runOnUiThread(new Runnable() {
 				public void run() {
-
-					recContent.getText().append(s).append("\r\n");
+					recContent.getText().append("---0x"+Integer.toHexString(cmd)+"---").append("\r\n").append(s).append("\r\n");
+					recContent.setMovementMethod(ScrollingMovementMethod.getInstance());
+					recContent.setSelection(recContent.getText().length(), recContent.getText().length());
 				}
 			});
 
 		}
 
-		public void onResponseLogingame(byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
+		public void onResponseLogingame(final int cmd, byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
 			TexasGameResponseLoginGame readObj = TexasGameResponseLoginGame.parseFrom(data,body_start,body_length);
 			final String s = readObj.toString();
 			runOnUiThread(new Runnable() {
 				public void run() {
-
-					recContent.getText().append(s).append("\r\n");
+					recContent.getText().append("---0x"+Integer.toHexString(cmd)+"---").append("\r\n").append(s).append("\r\n");
+					recContent.setMovementMethod(ScrollingMovementMethod.getInstance());
+					recContent.setSelection(recContent.getText().length(), recContent.getText().length());
 				}
 			});
 
 		}
 
-		public void onGameStart(byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
+		public void onGameStart(final int cmd, byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
 			TexasGameStart readObj = TexasGameStart.parseFrom(data,body_start,body_length);
 			final String s = readObj.toString();
 			runOnUiThread(new Runnable() {
 				public void run() {
+                    recContent.getText().append("---0x"+Integer.toHexString(cmd)+"---").append("\r\n").append(s).append("\r\n");
+					recContent.setMovementMethod(ScrollingMovementMethod.getInstance());
+					recContent.setSelection(recContent.getText().length(), recContent.getText().length());
+				}
+			});
 
-					recContent.getText().append(s).append("\r\n");
+		}
+
+		public void onGameReconnect(final int cmd, byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
+			TexasGameReconnect readObj = TexasGameReconnect.parseFrom(data,body_start,body_length);
+			final String s = readObj.toString();
+			runOnUiThread(new Runnable() {
+				public void run() {
+					recContent.getText().append("---0x"+Integer.toHexString(cmd)+"---").append("\r\n").append(s).append("\r\n");
+					recContent.setMovementMethod(ScrollingMovementMethod.getInstance());
+					recContent.setSelection(recContent.getText().length(), recContent.getText().length());
 				}
 			});
 

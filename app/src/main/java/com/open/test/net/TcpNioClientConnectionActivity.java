@@ -22,8 +22,10 @@ import com.poker.packet.InPacket;
 import com.poker.packet.OutPacket;
 import com.poker.protocols.GameClient;
 import com.poker.protocols.LoginClient;
+import com.poker.protocols.TexasCmd;
 import com.poker.protocols.login.server.ResponseLoginProto;
 import com.poker.protocols.texaspoker.TexasGameResponseLoginGameProto.TexasGameResponseLoginGame;
+import com.poker.protocols.texaspoker.TexasGameStartProto.TexasGameStart;
 
 
 public class TcpNioClientConnectionActivity extends Activity {
@@ -168,6 +170,8 @@ public class TcpNioClientConnectionActivity extends Activity {
 
 				}else if(cmd == BaseGameCmd.CMD_SERVER_BROAD_USEROFFLINE){
 
+				}else if(cmd == TexasCmd.CMD_SERVER_GAME_START){
+					onGameStart(data,header_start,header_length,body_start,body_length);
 				}
 
 			} catch (InvalidProtocolBufferException e) {
@@ -188,8 +192,20 @@ public class TcpNioClientConnectionActivity extends Activity {
 		}
 
 		public void onResponseLogingame(byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
-			TexasGameResponseLoginGame gameLogin = TexasGameResponseLoginGame.parseFrom(data,body_start,body_length);
-			final String s = gameLogin.toString();
+			TexasGameResponseLoginGame readObj = TexasGameResponseLoginGame.parseFrom(data,body_start,body_length);
+			final String s = readObj.toString();
+			runOnUiThread(new Runnable() {
+				public void run() {
+
+					recContent.getText().append(s).append("\r\n");
+				}
+			});
+
+		}
+
+		public void onGameStart(byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
+			TexasGameStart readObj = TexasGameStart.parseFrom(data,body_start,body_length);
+			final String s = readObj.toString();
 			runOnUiThread(new Runnable() {
 				public void run() {
 

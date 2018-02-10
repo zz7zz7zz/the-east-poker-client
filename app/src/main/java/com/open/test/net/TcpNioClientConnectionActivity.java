@@ -28,6 +28,10 @@ import com.poker.protocols.LoginClient;
 import com.poker.protocols.TexasCmd;
 import com.poker.protocols.TexasGameClient;
 import com.poker.protocols.login.server.ResponseLoginProto;
+import com.poker.protocols.texaspoker.BroadcastUserLoginProto.BroadcastUserLogin;
+import com.poker.protocols.game.server.BroadcastUserReadyProto.BroadcastUserReady;
+import com.poker.protocols.game.server.BroadcastUserOfflineProto.BroadcastUserOffline;
+import com.poker.protocols.game.server.BroadcastUserExitProto.BroadcastUserExit;
 import com.poker.protocols.texaspoker.TexasGameDealPreFlopProto.TexasGameDealPreFlop;
 import com.poker.protocols.texaspoker.TexasGameDealFlopProto.TexasGameDealFlop;
 import com.poker.protocols.texaspoker.TexasGameDealTurnProto.TexasGameDealTurn;
@@ -224,13 +228,13 @@ public class TcpNioClientConnectionActivity extends Activity {
 				}else if(cmd == BaseGameCmd.CMD_SERVER_USERLOGIN){
 					onResponseLogingame(cmd,data,header_start,header_length,body_start,body_length);
 				}else if(cmd == BaseGameCmd.CMD_SERVER_BROAD_USERLOGIN){
-
+					onBroadUserLogin(cmd,data,header_start,header_length,body_start,body_length);
 				}else if(cmd == BaseGameCmd.CMD_SERVER_BROAD_USERLOGOUT){
-
+					onBroadcastUserExit(cmd,data,header_start,header_length,body_start,body_length);
 				}else if(cmd == BaseGameCmd.CMD_SERVER_BROAD_USERREADY){
-
+					onBroadcastUserReady(cmd,data,header_start,header_length,body_start,body_length);
 				}else if(cmd == BaseGameCmd.CMD_SERVER_BROAD_USEROFFLINE){
-
+					onOffLineGame(cmd,data,header_start,header_length,body_start,body_length);
 				}else if(cmd == TexasCmd.CMD_SERVER_GAME_START){
 					onGameStart(cmd,data,header_start,header_length,body_start,body_length);
 				}else if(cmd == TexasCmd.CMD_SERVER_DEAL_PREFLOP){
@@ -278,6 +282,58 @@ public class TcpNioClientConnectionActivity extends Activity {
 
 		public void onResponseLogingame(final int cmd, byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
 			TexasGameResponseLoginGame readObj = TexasGameResponseLoginGame.parseFrom(data,body_start,body_length);
+			final String s = readObj.toString();
+			runOnUiThread(new Runnable() {
+				public void run() {
+					recContent.getText().append("---0x"+Integer.toHexString(cmd)+"---").append("\r\n").append(s).append("\r\n");
+					recContent.setMovementMethod(ScrollingMovementMethod.getInstance());
+					recContent.setSelection(recContent.getText().length(), recContent.getText().length());
+				}
+			});
+
+		}
+
+		public void onBroadUserLogin(final int cmd, byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
+			BroadcastUserLogin readObj = BroadcastUserLogin.parseFrom(data,body_start,body_length);
+			final String s = readObj.toString();
+			runOnUiThread(new Runnable() {
+				public void run() {
+					recContent.getText().append("---0x"+Integer.toHexString(cmd)+"---").append("\r\n").append(s).append("\r\n");
+					recContent.setMovementMethod(ScrollingMovementMethod.getInstance());
+					recContent.setSelection(recContent.getText().length(), recContent.getText().length());
+				}
+			});
+
+		}
+
+		public void onBroadcastUserExit(final int cmd, byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
+			BroadcastUserExit readObj = BroadcastUserExit.parseFrom(data,body_start,body_length);
+			final String s = readObj.toString();
+			runOnUiThread(new Runnable() {
+				public void run() {
+					recContent.getText().append("---0x"+Integer.toHexString(cmd)+"---").append("\r\n").append(s).append("\r\n");
+					recContent.setMovementMethod(ScrollingMovementMethod.getInstance());
+					recContent.setSelection(recContent.getText().length(), recContent.getText().length());
+				}
+			});
+
+		}
+
+		public void onBroadcastUserReady(final int cmd, byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
+			BroadcastUserReady readObj = BroadcastUserReady.parseFrom(data,body_start,body_length);
+			final String s = readObj.toString();
+			runOnUiThread(new Runnable() {
+				public void run() {
+					recContent.getText().append("---0x"+Integer.toHexString(cmd)+"---").append("\r\n").append(s).append("\r\n");
+					recContent.setMovementMethod(ScrollingMovementMethod.getInstance());
+					recContent.setSelection(recContent.getText().length(), recContent.getText().length());
+				}
+			});
+
+		}
+
+		public void onOffLineGame(final int cmd, byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
+			BroadcastUserOffline readObj = BroadcastUserOffline.parseFrom(data,body_start,body_length);
 			final String s = readObj.toString();
 			runOnUiThread(new Runnable() {
 				public void run() {

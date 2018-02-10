@@ -2,11 +2,13 @@ package com.open.test.net;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.open.net.client.impl.tcp.nio.NioClient;
@@ -24,6 +26,7 @@ import com.poker.packet.OutPacket;
 import com.poker.protocols.GameClient;
 import com.poker.protocols.LoginClient;
 import com.poker.protocols.TexasCmd;
+import com.poker.protocols.TexasGameClient;
 import com.poker.protocols.login.server.ResponseLoginProto;
 import com.poker.protocols.texaspoker.TexasGameDealPreFlopProto.TexasGameDealPreFlop;
 import com.poker.protocols.texaspoker.TexasGameDealFlopProto.TexasGameDealFlop;
@@ -62,7 +65,13 @@ public class TcpNioClientConnectionActivity extends Activity {
 		findViewById(R.id.reconn).setOnClickListener(listener);
 		findViewById(R.id.send).setOnClickListener(listener);
 		findViewById(R.id.clear).setOnClickListener(listener);
+        findViewById(R.id.login).setOnClickListener(listener);
 		findViewById(R.id.login_game).setOnClickListener(listener);
+
+		findViewById(R.id.fold).setOnClickListener(listener);
+		findViewById(R.id.check).setOnClickListener(listener);
+		findViewById(R.id.call).setOnClickListener(listener);
+		findViewById(R.id.raise).setOnClickListener(listener);
 
 		ip=(EditText) findViewById(R.id.ip);
 		port=(EditText) findViewById(R.id.port);
@@ -112,11 +121,58 @@ public class TcpNioClientConnectionActivity extends Activity {
 					recContent.setText("");
 					break;
 
+				case R.id.login:
+					{
+						byte[] data = LoginClient.requestLogin(((EditText)findViewById(R.id.uuid)).getText().toString(),0);
+						int length = BasePacket.buildClientPacekt(mTempBuff,1,LoginCmd.CMD_LOGIN_REQUEST,(byte)0,data,0,data.length);
+						mMessageProcessor.send(mClient,mTempBuff,0, length);
+					}
+                    break;
+
 				case R.id.login_game:
-					byte[] data = GameClient.requestLogin(GameIds.TEXAS_HOLD_EM_POKER,1);
-					int length = BasePacket.buildClientPacekt(mTempBuff,1, UserCmd.CMD_LOGIN_GAME,(byte)0,data,0,data.length);
-					mMessageProcessor.send(mClient,mTempBuff,0, length);
+					{
+						byte[] data = GameClient.requestLogin(GameIds.TEXAS_HOLD_EM_POKER,1);
+						int length = BasePacket.buildClientPacekt(mTempBuff,1, UserCmd.CMD_LOGIN_GAME,(byte)0,data,0,data.length);
+						mMessageProcessor.send(mClient,mTempBuff,0, length);
+					}
 					break;
+
+				case R.id.fold:
+				{
+					byte[] data = TexasGameClient.action(TexasGameBroadcastUserAction.Operate.FOLD,0);
+					int length = BasePacket.buildClientPacekt(mTempBuff,1, TexasCmd.CMD_CLIENT_ACTION,(byte)0,data,0,data.length);
+					mMessageProcessor.send(mClient,mTempBuff,0, length);
+				}
+				break;
+				case R.id.check:
+				{
+					byte[] data = TexasGameClient.action(TexasGameBroadcastUserAction.Operate.CHECK,0);
+					int length = BasePacket.buildClientPacekt(mTempBuff,1, TexasCmd.CMD_CLIENT_ACTION,(byte)0,data,0,data.length);
+					mMessageProcessor.send(mClient,mTempBuff,0, length);
+				}
+				break;
+
+				case R.id.call:
+				{
+					byte[] data = TexasGameClient.action(TexasGameBroadcastUserAction.Operate.CALL,0);
+					int length = BasePacket.buildClientPacekt(mTempBuff,1, TexasCmd.CMD_CLIENT_ACTION,(byte)0,data,0,data.length);
+					mMessageProcessor.send(mClient,mTempBuff,0, length);
+				}
+				break;
+
+				case R.id.raise:
+				{
+					String s_raise_chip = ((EditText)findViewById(R.id.raise_chip)).getText().toString();
+					if(!TextUtils.isEmpty(s_raise_chip)){
+						long raise_chip = Integer.valueOf(s_raise_chip);
+						byte[] data = TexasGameClient.action(TexasGameBroadcastUserAction.Operate.RAISE,raise_chip);
+						int length = BasePacket.buildClientPacekt(mTempBuff,1, TexasCmd.CMD_CLIENT_ACTION,(byte)0,data,0,data.length);
+						mMessageProcessor.send(mClient,mTempBuff,0, length);
+					}else{
+						Toast.makeText(getApplicationContext(),"chip must > 0 ",Toast.LENGTH_SHORT).show();
+					}
+				}
+				break;
 			}
 		}
 	};
@@ -130,11 +186,6 @@ public class TcpNioClientConnectionActivity extends Activity {
 					((TextView)findViewById(R.id.status)).setText("Connection-Success");
 				}
 			});
-
-			byte[] data = LoginClient.requestLogin(((EditText)findViewById(R.id.uuid)).getText().toString(),0);
-			int length = BasePacket.buildClientPacekt(mTempBuff,1,LoginCmd.CMD_LOGIN_REQUEST,(byte)0,data,0,data.length);
-			mMessageProcessor.send(mClient,mTempBuff,0, length);
-			System.out.println("onConnectionSuccess");
 		}
 
 		@Override

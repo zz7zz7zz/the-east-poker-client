@@ -226,7 +226,7 @@ public class TcpNioClientConnectionActivity extends Activity {
 				if(cmd == LoginCmd.CMD_LOGIN_RESPONSE){
 					onResponseLogin(cmd,data,header_start,header_length,body_start,body_length);
 				}else if(cmd == BaseGameCmd.CMD_SERVER_USERLOGIN){
-					onResponseLogingame(cmd,data,header_start,header_length,body_start,body_length);
+					onResponseLoginGame(cmd,data,header_start,header_length,body_start,body_length);
 				}else if(cmd == BaseGameCmd.CMD_SERVER_BROAD_USERLOGIN){
 					onBroadUserLogin(cmd,data,header_start,header_length,body_start,body_length);
 				}else if(cmd == BaseGameCmd.CMD_SERVER_BROAD_USERLOGOUT){
@@ -242,7 +242,7 @@ public class TcpNioClientConnectionActivity extends Activity {
 				}else if(cmd == TexasCmd.CMD_SERVER_DEAL_FLOP){
 					onDealFlop(cmd,data,header_start,header_length,body_start,body_length);
 				}else if(cmd == TexasCmd.CMD_SERVER_DEAL_TURN){
-					onDealTrun(cmd,data,header_start,header_length,body_start,body_length);
+					onDealTurn(cmd,data,header_start,header_length,body_start,body_length);
 				}else if(cmd == TexasCmd.CMD_SERVER_DEAL_RIVER){
 					onDealRiver(cmd,data,header_start,header_length,body_start,body_length);
 				}else if(cmd == TexasCmd.CMD_SERVER_BROADCAST_USER_ACTION){
@@ -280,7 +280,7 @@ public class TcpNioClientConnectionActivity extends Activity {
 
 		}
 
-		public void onResponseLogingame(final int cmd, byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
+		public void onResponseLoginGame(final int cmd, byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
 			TexasGameResponseLoginGame readObj = TexasGameResponseLoginGame.parseFrom(data,body_start,body_length);
 			final String s = readObj.toString();
 			runOnUiThread(new Runnable() {
@@ -385,7 +385,7 @@ public class TcpNioClientConnectionActivity extends Activity {
 		}
 
 
-		public void onDealTrun(final int cmd, byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
+		public void onDealTurn(final int cmd, byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
 			TexasGameDealTurn readObj = TexasGameDealTurn.parseFrom(data,body_start,body_length);
 			final String s = readObj.toString();
 			runOnUiThread(new Runnable() {

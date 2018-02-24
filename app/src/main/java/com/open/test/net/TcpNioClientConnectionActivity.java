@@ -40,6 +40,7 @@ import com.poker.protocols.texaspoker.TexasGameDealPreFlopProto.TexasGameDealPre
 import com.poker.protocols.texaspoker.TexasGameDealRiverProto.TexasGameDealRiver;
 import com.poker.protocols.texaspoker.TexasGameDealTurnProto.TexasGameDealTurn;
 import com.poker.protocols.texaspoker.TexasGameEndProto.TexasGameEnd;
+import com.poker.protocols.texaspoker.TexasGameErrorProto.TexasGameError;
 import com.poker.protocols.texaspoker.TexasGameReconnectProto.TexasGameReconnect;
 import com.poker.protocols.texaspoker.TexasGameResponseLoginGameProto.TexasGameResponseLoginGame;
 import com.poker.protocols.texaspoker.TexasGameShowHandProto.TexasGameShowHand;
@@ -143,14 +144,14 @@ public class TcpNioClientConnectionActivity extends Activity {
 
 				case R.id.fold:
 				{
-					byte[] data = TexasGameClient.action(TexasGameBroadcastUserAction.Operate.FOLD,0);
+					byte[] data = TexasGameClient.action(1,0);
 					int length = BasePacket.buildClientPacekt(mTempBuff,1, TexasCmd.CMD_CLIENT_ACTION,(byte)0,data,0,data.length);
 					mMessageProcessor.send(mClient,mTempBuff,0, length);
 				}
 				break;
 				case R.id.check:
 				{
-					byte[] data = TexasGameClient.action(TexasGameBroadcastUserAction.Operate.CHECK,0);
+					byte[] data = TexasGameClient.action(2,0);
 					int length = BasePacket.buildClientPacekt(mTempBuff,1, TexasCmd.CMD_CLIENT_ACTION,(byte)0,data,0,data.length);
 					mMessageProcessor.send(mClient,mTempBuff,0, length);
 				}
@@ -158,7 +159,7 @@ public class TcpNioClientConnectionActivity extends Activity {
 
 				case R.id.call:
 				{
-					byte[] data = TexasGameClient.action(TexasGameBroadcastUserAction.Operate.CALL,0);
+					byte[] data = TexasGameClient.action(4,0);
 					int length = BasePacket.buildClientPacekt(mTempBuff,1, TexasCmd.CMD_CLIENT_ACTION,(byte)0,data,0,data.length);
 					mMessageProcessor.send(mClient,mTempBuff,0, length);
 				}
@@ -169,7 +170,7 @@ public class TcpNioClientConnectionActivity extends Activity {
 					String s_raise_chip = ((EditText)findViewById(R.id.raise_chip)).getText().toString();
 					if(!TextUtils.isEmpty(s_raise_chip)){
 						long raise_chip = Integer.valueOf(s_raise_chip);
-						byte[] data = TexasGameClient.action(TexasGameBroadcastUserAction.Operate.RAISE,raise_chip);
+						byte[] data = TexasGameClient.action(8,raise_chip);
 						int length = BasePacket.buildClientPacekt(mTempBuff,1, TexasCmd.CMD_CLIENT_ACTION,(byte)0,data,0,data.length);
 						mMessageProcessor.send(mClient,mTempBuff,0, length);
 					}else{
@@ -257,6 +258,8 @@ public class TcpNioClientConnectionActivity extends Activity {
 					onBroadcastGameOver(cmd,data,header_start,header_length,body_start,body_length);
 				}else if(cmd == TexasCmd.CMD_SERVER_RECONNECT){
 					onGameReconnect(cmd,data,header_start,header_length,body_start,body_length);
+				}else if(cmd == TexasCmd.CMD_SERVER_USER_ERROR){
+					onGameError(cmd,data,header_start,header_length,body_start,body_length);
 				}else{
 					System.out.println("input_packet err -------------------- not handled ");
 				}
@@ -478,6 +481,19 @@ public class TcpNioClientConnectionActivity extends Activity {
 
 		public void onGameReconnect(final int cmd, byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
 			TexasGameReconnect readObj = TexasGameReconnect.parseFrom(data,body_start,body_length);
+			final String s = readObj.toString();
+			runOnUiThread(new Runnable() {
+				public void run() {
+					recContent.getText().append("---0x"+Integer.toHexString(cmd)+"---").append("\r\n").append(s).append("\r\n");
+					recContent.setMovementMethod(ScrollingMovementMethod.getInstance());
+					recContent.setSelection(recContent.getText().length(), recContent.getText().length());
+				}
+			});
+
+		}
+
+		public void onGameError(final int cmd, byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
+			TexasGameError readObj = TexasGameError.parseFrom(data,body_start,body_length);
 			final String s = readObj.toString();
 			runOnUiThread(new Runnable() {
 				public void run() {

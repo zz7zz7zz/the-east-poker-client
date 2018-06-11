@@ -33,6 +33,7 @@ import com.poker.protocols.game.server.BroadcastUserExitProto.BroadcastUserExit;
 import com.poker.protocols.game.server.BroadcastUserOfflineProto.BroadcastUserOffline;
 import com.poker.protocols.game.server.BroadcastUserReadyProto.BroadcastUserReady;
 import com.poker.protocols.login.server.ResponseLoginProto;
+import com.poker.protocols.server.SCConfigProto;
 import com.poker.protocols.texaspoker.BroadcastUserLoginProto.BroadcastUserLogin;
 import com.poker.protocols.texaspoker.TexasGameBroadcastNextOperateProto.TexasGameBroadcastNextOperate;
 import com.poker.protocols.texaspoker.TexasGameBroadcastPotProto.TexasGameBroadcastPot;
@@ -240,6 +241,8 @@ public class TcpNioClientConnectionActivity extends Activity {
 				System.out.println("input_packet cmd 0x" + Integer.toHexString(cmd) + " name " + Cmd.getCmdString(cmd) + " length " + DataPacket.getLength(data,header_start));
 				if(cmd == SystemCmd.CMD_SYS_HEAR_BEAT_REPONSE){
 
+				}else if(cmd == SystemCmd.CMD_SYS_SERVER_CONFIG){
+					onResponseServerConfig(cmd,data,header_start,header_length,body_start,body_length);
 				}else if(cmd == LoginCmd.CMD_LOGIN_RESPONSE){
 					onResponseLogin(cmd,data,header_start,header_length,body_start,body_length);
 				}else if(cmd == BaseGameCmd.CMD_SERVER_USERLOGIN){
@@ -284,6 +287,19 @@ public class TcpNioClientConnectionActivity extends Activity {
 				e.printStackTrace();
 				System.out.println("input_packet err -------------------- exception ");
 			}
+		}
+
+		public void onResponseServerConfig(final int cmd, byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {
+			SCConfigProto.SCConfig readObj = SCConfigProto.SCConfig.parseFrom(data,body_start,body_length);
+			final String s = readObj.toString();
+			runOnUiThread(new Runnable() {
+				public void run() {
+					recContent.getText().append("---0x"+Integer.toHexString(cmd)+"---").append("\r\n").append(s).append("\r\n");
+					recContent.setMovementMethod(ScrollingMovementMethod.getInstance());
+					recContent.setSelection(recContent.getText().length(), recContent.getText().length());
+				}
+			});
+
 		}
 
 		public void onResponseLogin(final int cmd, byte[] data, int header_start, int header_length, int body_start, int body_length) throws InvalidProtocolBufferException {

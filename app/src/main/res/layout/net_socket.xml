@@ -64,6 +64,13 @@
 				android:layout_marginTop="5.0dp"
 				android:layout_weight="1.0"
 				android:text="重连"/>
+			<Button
+				android:id="@+id/heat_beat"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="5.0dp"
+				android:layout_weight="1.0"
+				android:text="心跳"/>
 		</LinearLayout>
 
 	    <LinearLayout 

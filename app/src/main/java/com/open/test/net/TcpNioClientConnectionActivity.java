@@ -17,7 +17,9 @@ import com.open.net.client.object.IConnectListener;
 import com.open.net.client.object.TcpAddress;
 import com.poker.base.GameIds;
 import com.poker.cmd.BaseGameCmd;
+import com.poker.cmd.Cmd;
 import com.poker.cmd.LoginCmd;
+import com.poker.cmd.SystemCmd;
 import com.poker.cmd.UserCmd;
 import com.poker.data.DataPacket;
 import com.poker.packet.BasePacket;
@@ -65,12 +67,16 @@ public class TcpNioClientConnectionActivity extends Activity {
 	private void initView()
 	{
         findViewById(R.id.set_ip_port).setOnClickListener(listener);
+
 		findViewById(R.id.open).setOnClickListener(listener);
 		findViewById(R.id.close).setOnClickListener(listener);
 		findViewById(R.id.reconn).setOnClickListener(listener);
+		findViewById(R.id.heat_beat).setOnClickListener(listener);
+
 		findViewById(R.id.send).setOnClickListener(listener);
 		findViewById(R.id.clear).setOnClickListener(listener);
-        findViewById(R.id.login).setOnClickListener(listener);
+
+		findViewById(R.id.login).setOnClickListener(listener);
 		findViewById(R.id.login_game).setOnClickListener(listener);
 
 		findViewById(R.id.fold).setOnClickListener(listener);
@@ -179,6 +185,14 @@ public class TcpNioClientConnectionActivity extends Activity {
 					}
 				}
 				break;
+
+				case R.id.heat_beat:
+				{
+					byte[] EMPTY_BYTE_ARRAY= new byte[0];
+					int length = BasePacket.buildClientPacekt(mTempBuff,1, SystemCmd.CMD_SYS_HEAR_BEAT,(byte)0,EMPTY_BYTE_ARRAY,0,0);
+					mMessageProcessor.send(mClient,mTempBuff,0, length);
+				}
+
 			}
 		}
 	};
@@ -223,9 +237,10 @@ public class TcpNioClientConnectionActivity extends Activity {
 
 			try {
 				int cmd   = DataPacket.getCmd(data, header_start);
-				System.out.println("input_packet cmd 0x" + Integer.toHexString(cmd) + " name " + LoginCmd.getCmdString(cmd) + " length " + DataPacket.getLength(data,header_start));
+				System.out.println("input_packet cmd 0x" + Integer.toHexString(cmd) + " name " + Cmd.getCmdString(cmd) + " length " + DataPacket.getLength(data,header_start));
+				if(cmd == SystemCmd.CMD_SYS_HEAR_BEAT_REPONSE){
 
-				if(cmd == LoginCmd.CMD_LOGIN_RESPONSE){
+				}else if(cmd == LoginCmd.CMD_LOGIN_RESPONSE){
 					onResponseLogin(cmd,data,header_start,header_length,body_start,body_length);
 				}else if(cmd == BaseGameCmd.CMD_SERVER_USERLOGIN){
 					onResponseLoginGame(cmd,data,header_start,header_length,body_start,body_length);
